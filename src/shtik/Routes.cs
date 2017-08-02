@@ -29,7 +29,7 @@ namespace shtik
 
             routes.MapGet("fonts/{font}", (request, response, data) =>
             {
-                if (data.Values.TryGetString("font", out var font))
+                if (data.Values.TryGetString("font", out string font))
                 {
                     response.ContentType = font.EndsWith(".woff") ? "application/font-woff" : "font/woff2";
                     var resourceName = font.Replace(".woff", "_woff").Replace('-', '_');
@@ -48,8 +48,8 @@ namespace shtik
             {
                 if (data.Values.TryGetInt("index", out int index))
                 {
-                    var (got, slide) = await Slides.TryGet(index - 1);
-                    if (got)
+                    var slides = await Slides.LoadAsync();
+                    if (slides.TryGet(index, out var slide))
                     {
                         response.ContentType = "text/html";
                         var html = Properties.Resources.template_html
@@ -59,8 +59,10 @@ namespace shtik
                             .Replace("{{previousIndex}}", (index - 1).ToString(CultureInfo.InvariantCulture))
                             .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture));
                         await response.WriteAsync(html);
+                        return;
                     }
                 }
+                response.StatusCode = 404;
             });
         }
     }
