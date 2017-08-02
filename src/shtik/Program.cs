@@ -7,7 +7,9 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace shtik
@@ -19,15 +21,24 @@ namespace shtik
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .Configure(app =>
+        public static IWebHost BuildWebHost(string[] args)
+        {
+
+            return WebHost.CreateDefaultBuilder(args)
+                .ConfigureServices(services =>
                 {
-                    app.Run(async ctx =>
-                    {
-                        await ctx.Response.WriteAsync("Hello.");
-                    });
+                    services.AddRouting();
                 })
-                .Build();
+                .Configure(app =>
+                    {
+                        app.UseRouter(Routes.Router);
+                        app.Run(ctx =>
+                        {
+                            ctx.Response.Redirect("/1");
+                            return Task.CompletedTask;
+                        });
+                    })
+                    .Build();
+        }
     }
 }
