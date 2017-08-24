@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace shtik
 {
@@ -15,6 +18,12 @@ namespace shtik
 
         public static void Router(IRouteBuilder routes)
         {
+            routes.MapGet("normalize.css", (request, response, data) =>
+            {
+                response.ContentType = "text/css";
+                return response.WriteAsync(Properties.Resources.normalize_css);
+            });
+
             routes.MapGet("theme.css", (request, response, data) =>
             {
                 response.ContentType = "text/css";
@@ -46,6 +55,8 @@ namespace shtik
 
             routes.MapGet("{index}", async (request, response, data) =>
             {
+                var options = request.HttpContext.RequestServices.GetRequiredService<IOptions<ShtikOptions>>().Value;
+
                 if (data.Values.TryGetInt("index", out int index))
                 {
                     var slides = await Slides.LoadAsync();
@@ -57,7 +68,8 @@ namespace shtik
                             .Replace("{{layout}}", slide.Metadata.GetStringOrDefault("layout", "blank"))
                             .Replace("{{content}}", slide.Html)
                             .Replace("{{previousIndex}}", (index - 1).ToString(CultureInfo.InvariantCulture))
-                            .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture));
+                            .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture))
+                            .Replace("{{shtik}}", $"shtik.io/live/{options.Presenter}/{options.Slug}");
                         await response.WriteAsync(html);
                         return;
                     }
