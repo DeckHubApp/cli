@@ -6,60 +6,42 @@ using Shtik.Rendering.Markdown;
 
 namespace shtik
 {
-    public class Slides
+    public static class Slides
     {
-        private static Slides _instance;
+        private static Show _instance;
 
-        private readonly List<Slide> _slides;
-
-        private Slides(List<Slide> slides)
-        {
-            _slides = slides;
-        }
-
-        public static ValueTask<Slides> LoadAsync()
+        public static ValueTask<Show> LoadAsync()
         {
             return _instance != null
-                ? new ValueTask<Slides>(_instance)
-                : new ValueTask<Slides>(LoadImpl());
+                ? new ValueTask<Show>(_instance)
+                : new ValueTask<Show>(LoadImpl());
         }
 
-        public bool TryGet(int index, out Slide slide)
-        {
-            if (_slides.Count >= index)
-            {
-                slide = _slides[index - 1];
-                return true;
-            }
-            slide = null;
-            return false;
-        }
-
-        public int Count => _slides.Count;
-
-        private static async Task<Slides> LoadImpl()
+        private static async Task<Show> LoadImpl()
         {
             var list = new List<Slide>();
             var path = Path.Combine(Environment.CurrentDirectory, "slides.md");
             if (!File.Exists(path))
             {
-                return new Slides(new List<Slide>(0));
+                return new Show(new Dictionary<string, object>(),  new List<Slide>(0));
             }
-            var renderer = new Renderer();
+            var renderer = new ShowRenderer();
             using (var stream = File.OpenRead(path))
+            using (var reader = new StreamReader(stream))
             {
-                var splitter = new Splitter(stream);
-                while (true)
-                {
-                    var frontMatter = await splitter.ReadNextBlockAsync();
-                    if (frontMatter == null) break;
-                    var markdown = await splitter.ReadNextBlockAsync();
-                    if (markdown == null) break;
-                    var slide = renderer.Render(frontMatter, markdown);
-                    list.Add(slide);
-                }
+                return _instance = renderer.Render(await reader.ReadToEndAsync());
             }
-            return _instance = new Slides(list);
+        }
+
+        public static bool TryGetSlide(this Show show, int index, out Slide slide)
+        {
+            if (show.Slides.Count > index)
+            {
+                slide = show.Slides[index];
+                return true;
+            }
+            slide = null;
+            return false;
         }
     }
 }

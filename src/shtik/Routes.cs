@@ -1,12 +1,9 @@
-﻿using System.Globalization;
-using System.Linq;
-using System.Net.Mime;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Resources;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -42,8 +39,7 @@ namespace shtik
                 {
                     response.ContentType = font.EndsWith(".woff") ? "application/font-woff" : "font/woff2";
                     var resourceName = font.Replace(".woff", "_woff").Replace('-', '_');
-                    var bytes = ResourceManager.GetObject(resourceName) as byte[];
-                    if (bytes != null)
+                    if (ResourceManager.GetObject(resourceName) is byte[] bytes)
                     {
                         response.ContentLength = bytes.Length;
                         return response.Body.WriteAsync(bytes, 0, bytes.Length);
@@ -59,13 +55,13 @@ namespace shtik
 
                 if (data.Values.TryGetInt("index", out int index))
                 {
-                    var slides = await Slides.LoadAsync();
-                    if (slides.TryGet(index, out var slide))
+                    var show = await Slides.LoadAsync();
+                    if (show.TryGetSlide(index, out var slide))
                     {
                         response.ContentType = "text/html";
                         var html = Properties.Resources.template_html
-                            .Replace("{{title}}", slide.Metadata.GetStringOrEmpty("title"))
-                            .Replace("{{layout}}", slide.Metadata.GetStringOrDefault("layout", "blank"))
+                            .Replace("{{title}}", slide.Metadata.GetStringOrDefault("title", show.Metadata.GetStringOrEmpty("title")))
+                            .Replace("{{layout}}", slide.Metadata.GetStringOrDefault("layout", show.Metadata.GetStringOrDefault("layout", "blank")))
                             .Replace("{{content}}", slide.Html)
                             .Replace("{{previousIndex}}", (index - 1).ToString(CultureInfo.InvariantCulture))
                             .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture))

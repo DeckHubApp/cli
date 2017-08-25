@@ -1,4 +1,6 @@
-﻿---
+﻿title: Shtik
+layout: title-and-content
+---
 layout: title-slide
 ---
 # ASP.NET Core 2.0
@@ -8,16 +10,17 @@ layout: title-slide
 Online at **{{shtik}}**
 
 ---
-layout: title-and-content
 ---
+
 # Shtik
 
 - Markdown-based Presentation tool
 - Standalone .NET Core 2 runner
 - Online social features
+
 ---
-layout: title-and-content
 ---
+
 # shtik-cli
 
 - Self-contained .NET Core 2 application
@@ -27,8 +30,8 @@ layout: title-and-content
 - Publishes to **shtik.io**
 
 ---
-layout: title-and-content
 ---
+
 # shtik.io
 
 - View slides and notes in real-time
@@ -37,8 +40,8 @@ layout: title-and-content
 - Ask and answer questions
 
 ---
-layout: title-and-content
 ---
+
 # ASP.NET Core MVC 2.0
 
 - Program.cs
@@ -46,8 +49,8 @@ layout: title-and-content
 - MVC
 
 ---
-layout: title-and-content
 ---
+
 # Authentication
 
 - c.f. Heckle
@@ -56,8 +59,8 @@ layout: title-and-content
 - EF Core &amp; PostgreSQL
 
 ---
-layout: title-and-content
 ---
+
 # EF Core 2.0
 
 - Similar to EF
@@ -65,8 +68,8 @@ layout: title-and-content
 - Command-line tooling
 
 ---
-layout: title-and-content
 ---
+
 # Realtime
 
 - SignalR Core is not ready yet either
@@ -75,8 +78,8 @@ layout: title-and-content
 - Drive with Redis
 
 ---
-layout: title-and-content
 ---
+
 # Microservices
 
 - Shows
@@ -85,8 +88,8 @@ layout: title-and-content
 - Questions
 
 ---
-layout: title-and-content
 ---
+
 # Docker
 
 - New images
@@ -95,8 +98,8 @@ layout: title-and-content
   - Running migrations
 
 ---
-layout: title-and-content
 ---
+
 # Production
 
 - Docker Swarm
@@ -104,7 +107,7 @@ layout: title-and-content
 - CloudFlare
 
 ---
-layout: title-slide
 ---
+
 # Fin
 ## [shtik.io]()
