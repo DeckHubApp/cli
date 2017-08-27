@@ -1,6 +1,7 @@
 ﻿namespace Shtik {
 
     var currentPage = 0;
+    var inTransition = false;
 
     const Keys = {
         LeftArrow: 37,
@@ -38,6 +39,7 @@
     }
 
     function animateTransition(newDocument: HTMLElement) {
+        inTransition = true;
         const newPage = parseInt(window.location.href.replace(/.*\//, ""));
         const main = document.querySelector("main");
         
@@ -57,6 +59,7 @@
         oldContent.addEventListener("animationend",
             () => {
                 oldContent.parentNode.removeChild(oldContent);
+                inTransition = false;
             });
     }
 
@@ -69,6 +72,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             currentPage = parseInt(window.location.href.replace(/.*\//, ""));
             document.addEventListener("keydown", (e: KeyboardEvent) => {
+                if (inTransition) return;
                 let link: HTMLAnchorElement = null;
                 if (e.keyCode === Keys.LeftArrow) {
                     link = document.querySelector("a#previous-link") as HTMLAnchorElement;

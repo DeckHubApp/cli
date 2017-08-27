@@ -150,7 +150,7 @@ namespace shtik.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to var currentPage = 0;
+        ///   Looks up a localized string similar to var page = 0;
         ///
         ///const Keys = {
         ///    LeftArrow: 37,
@@ -174,6 +174,30 @@ namespace shtik.Properties {
         internal static string script_js {
             get {
                 return ResourceManager.GetString("script_js", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to var Shtik;
+        ///(function (Shtik) {
+        ///    var currentPage = 0;
+        ///    var Keys = {
+        ///        LeftArrow: 37,
+        ///        RightArrow: 39,
+        ///        Space: 32
+        ///    };
+        ///    function loadPage(url) {
+        ///        return fetch(url, { method: &quot;GET&quot; }).then(function (response) { return response.text(); });
+        ///    }
+        ///    function transition() {
+        ///        var url = window.location.href;
+        ///        loadPage(url).then(function (html) {
+        ///            var newDocument = document.createElement(&quot;html&quot;);
+        ///            newDocument.innerHTML = html;        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string shtik_js {
+            get {
+                return ResourceManager.GetString("shtik_js", resourceCulture);
             }
         }
         

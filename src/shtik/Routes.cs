@@ -27,10 +27,10 @@ namespace shtik
                 return response.WriteAsync(Properties.Resources.theme_css);
             });
 
-            routes.MapGet("script.js", (request, response, data) =>
+            routes.MapGet("shtik.js", (request, response, data) =>
             {
                 response.ContentType = "text/javascript";
-                return response.WriteAsync(Properties.Resources.script_js);
+                return response.WriteAsync(Properties.Resources.shtik_js);
             });
 
             routes.MapGet("fonts/{font}", (request, response, data) =>

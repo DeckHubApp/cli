@@ -1,6 +1,7 @@
 var Shtik;
 (function (Shtik) {
     var currentPage = 0;
+    var inTransition = false;
     var Keys = {
         LeftArrow: 37,
         RightArrow: 39,
@@ -27,6 +28,7 @@ var Shtik;
         main.replaceChild(newNav, oldNav);
     }
     function animateTransition(newDocument) {
+        inTransition = true;
         var newPage = parseInt(window.location.href.replace(/.*\//, ""));
         var main = document.querySelector("main");
         var oldContent = document.querySelector("article");
@@ -42,6 +44,7 @@ var Shtik;
         }
         oldContent.addEventListener("animationend", function () {
             oldContent.parentNode.removeChild(oldContent);
+            inTransition = false;
         });
     }
     function go(href) {
@@ -52,6 +55,8 @@ var Shtik;
         document.addEventListener("DOMContentLoaded", function () {
             currentPage = parseInt(window.location.href.replace(/.*\//, ""));
             document.addEventListener("keydown", function (e) {
+                if (inTransition)
+                    return;
                 var link = null;
                 if (e.keyCode === Keys.LeftArrow) {
                     link = document.querySelector("a#previous-link");
@@ -67,3 +72,4 @@ var Shtik;
         });
     })();
 })(Shtik || (Shtik = {}));
+//# sourceMappingURL=shtik.js.map

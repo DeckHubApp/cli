@@ -1,15 +1,14 @@
 ﻿title: Shtik
 layout: title-and-content
----
+...
 layout: title-slide
----
+...
 # ASP.NET Core 2.0
 ## Ready for Prime Time
 ### @markrendle  &mdash;  rendlelabs.com
 
 Online at **{{shtik}}**
 
----
 ---
 
 # Shtik
@@ -18,7 +17,6 @@ Online at **{{shtik}}**
 - Standalone .NET Core 2 runner
 - Online social features
 
----
 ---
 
 # shtik-cli
@@ -30,7 +28,6 @@ Online at **{{shtik}}**
 - Publishes to **shtik.io**
 
 ---
----
 
 # shtik.io
 
@@ -40,7 +37,6 @@ Online at **{{shtik}}**
 - Ask and answer questions
 
 ---
----
 
 # ASP.NET Core MVC 2.0
 
@@ -48,7 +44,6 @@ Online at **{{shtik}}**
 - Startup.cs
 - MVC
 
----
 ---
 
 # Authentication
@@ -59,7 +54,6 @@ Online at **{{shtik}}**
 - EF Core &amp; PostgreSQL
 
 ---
----
 
 # EF Core 2.0
 
@@ -67,7 +61,6 @@ Online at **{{shtik}}**
 - Migrations
 - Command-line tooling
 
----
 ---
 
 # Realtime
@@ -78,7 +71,6 @@ Online at **{{shtik}}**
 - Drive with Redis
 
 ---
----
 
 # Microservices
 
@@ -87,7 +79,6 @@ Online at **{{shtik}}**
 - Notes
 - Questions
 
----
 ---
 
 # Docker
@@ -98,7 +89,6 @@ Online at **{{shtik}}**
   - Running migrations
 
 ---
----
 
 # Production
 
@@ -106,7 +96,6 @@ Online at **{{shtik}}**
 - Traefik
 - CloudFlare
 
----
 ---
 
 # Fin

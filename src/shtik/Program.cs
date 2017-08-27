@@ -30,7 +30,7 @@ namespace shtik
                         app.UseRouter(Routes.Router);
                         app.Run(ctx =>
                         {
-                            ctx.Response.Redirect("/1");
+                            ctx.Response.Redirect("/0");
                             return Task.CompletedTask;
                         });
                     })

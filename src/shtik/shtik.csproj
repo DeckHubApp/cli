@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
-    <PackageReference Include="Shtik.Rendering.Markdown" Version="0.1.0" />
+    <PackageReference Include="Shtik.Rendering.Markdown" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>
