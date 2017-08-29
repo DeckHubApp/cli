@@ -72,4 +72,3 @@ var Shtik;
         });
     })();
 })(Shtik || (Shtik = {}));
-//# sourceMappingURL=shtik.js.map

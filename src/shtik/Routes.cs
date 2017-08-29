@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Resources;
 using System.Threading.Tasks;
@@ -6,11 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shtik.Rendering.Markdown;
 
 namespace shtik
 {
     public static class Routes
     {
+        private static LiveShow _live;
         private static readonly ResourceManager ResourceManager = new ResourceManager("shtik.Properties.Resources", typeof(Routes).Assembly);
 
         public static void Router(IRouteBuilder routes)
@@ -52,10 +55,23 @@ namespace shtik
             routes.MapGet("{index}", async (request, response, data) =>
             {
                 var options = request.HttpContext.RequestServices.GetRequiredService<IOptions<ShtikOptions>>().Value;
+                var shtikClient = request.HttpContext.RequestServices.GetRequiredService<IShtikClient>();
 
                 if (data.Values.TryGetInt("index", out int index))
                 {
                     var show = await Slides.LoadAsync();
+                    if (_live == null)
+                    {
+                        _live = await shtikClient.StartShow(new StartShow
+                        {
+                            Markdown = Slides.Markdown,
+                            Presenter = options.Presenter,
+                            Place = options.Place,
+                            Slug = options.Slug,
+                            Time = DateTimeOffset.Now,
+                            Title = show.Metadata.GetStringOrEmpty("title")
+                        });
+                    }
                     if (show.TryGetSlide(index, out var slide))
                     {
                         response.ContentType = "text/html";

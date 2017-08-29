@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace shtik
 {
@@ -18,31 +19,51 @@ namespace shtik
 
         public static IWebHost BuildWebHost(string[] args)
         {
-            var configRoot = LoadConfig(args);
-            return WebHost.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
+            return new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureAppConfiguration((_, config) =>
                 {
-                    services.Configure<ShtikOptions>(configRoot);
+                    var userProfileConfig =
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".shtik",
+                            "shtik.json");
+                    config.AddJsonFile(userProfileConfig, true)
+                        .AddEnvironmentVariables("SHTIK_")
+                        .AddJsonFile("shtik.json", true)
+                        .AddCommandLine(args);
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    if (hostingContext.HostingEnvironment.IsDevelopment())
+                    {
+                        logging.SetMinimumLevel(LogLevel.Information)
+                            .AddConsole()
+                            .AddDebug();
+                    }
+                    else
+                    {
+                        logging.SetMinimumLevel(LogLevel.Warning).AddConsole();
+                    }
+                })
+                .UseDefaultServiceProvider((hostingContext, options) =>
+                {
+                    options.ValidateScopes = hostingContext.HostingEnvironment.IsDevelopment();
+                })
+                .ConfigureServices((hostingContext, services) =>
+                {
+                    services.Configure<ShtikOptions>(hostingContext.Configuration);
+                    services.AddSingleton<IShtikClient, ShtikClient>();
                     services.AddRouting();
                 })
                 .Configure(app =>
+                {
+                    app.UseRouter(Routes.Router);
+                    app.Run(ctx =>
                     {
-                        app.UseRouter(Routes.Router);
-                        app.Run(ctx =>
-                        {
-                            ctx.Response.Redirect("/0");
-                            return Task.CompletedTask;
-                        });
-                    })
-                    .Build();
-        }
-
-        private static IConfigurationRoot LoadConfig(string[] args)
-        {
-            return new ConfigurationBuilder()
-                .AddEnvironmentVariables("SHTIK_")
-                .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "shtik.json"))
-                .AddCommandLine(args)
+                        ctx.Response.Redirect("/0");
+                        return Task.CompletedTask;
+                    });
+                })
                 .Build();
         }
     }

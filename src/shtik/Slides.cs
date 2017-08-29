@@ -10,6 +10,8 @@ namespace shtik
     {
         private static Show _instance;
 
+        public static string Markdown { get; private set; }
+
         public static ValueTask<Show> LoadAsync()
         {
             return _instance != null
@@ -29,8 +31,9 @@ namespace shtik
             using (var stream = File.OpenRead(path))
             using (var reader = new StreamReader(stream))
             {
-                return _instance = renderer.Render(await reader.ReadToEndAsync());
+                Markdown = await reader.ReadToEndAsync();
             }
+            return _instance = renderer.Render(Markdown);
         }
 
         public static bool TryGetSlide(this Show show, int index, out Slide slide)
