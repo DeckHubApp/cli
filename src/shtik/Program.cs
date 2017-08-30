@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
@@ -19,7 +20,9 @@ namespace shtik
 
         public static IWebHost BuildWebHost(string[] args)
         {
+            var port = GetPort(args);
             return new WebHostBuilder()
+                .UseUrls($"http://localhost:{port}")
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration((_, config) =>
@@ -65,6 +68,21 @@ namespace shtik
                     });
                 })
                 .Build();
+        }
+
+        private static int GetPort(string[] args)
+        {
+            int pIndex = Array.IndexOf(args, "-p");
+            if (pIndex < 0) pIndex = Array.IndexOf(args, "--port");
+            if (pIndex > -1 && args.Length > pIndex + 1)
+            {
+                string str = args[pIndex];
+                if (int.TryParse(str, NumberStyles.Integer, CultureInfo.InvariantCulture, out int port))
+                {
+                    return port;
+                }
+            }
+            return 5555;
         }
     }
 }

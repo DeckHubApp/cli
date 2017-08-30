@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using shtik.Actions;
 using Shtik.Rendering.Markdown;
 
 namespace shtik
 {
     public static class Routes
     {
-        private static LiveShow _live;
         private static readonly ResourceManager ResourceManager = new ResourceManager("shtik.Properties.Resources", typeof(Routes).Assembly);
 
         public static void Router(IRouteBuilder routes)
@@ -52,42 +52,7 @@ namespace shtik
                 return Task.CompletedTask;
             });
 
-            routes.MapGet("{index}", async (request, response, data) =>
-            {
-                var options = request.HttpContext.RequestServices.GetRequiredService<IOptions<ShtikOptions>>().Value;
-                var shtikClient = request.HttpContext.RequestServices.GetRequiredService<IShtikClient>();
-
-                if (data.Values.TryGetInt("index", out int index))
-                {
-                    var show = await Slides.LoadAsync();
-                    if (_live == null)
-                    {
-                        _live = await shtikClient.StartShow(new StartShow
-                        {
-                            Markdown = Slides.Markdown,
-                            Presenter = options.Presenter,
-                            Place = options.Place,
-                            Slug = options.Slug,
-                            Time = DateTimeOffset.Now,
-                            Title = show.Metadata.GetStringOrEmpty("title")
-                        });
-                    }
-                    if (show.TryGetSlide(index, out var slide))
-                    {
-                        response.ContentType = "text/html";
-                        var html = Properties.Resources.template_html
-                            .Replace("{{title}}", slide.Metadata.GetStringOrDefault("title", show.Metadata.GetStringOrEmpty("title")))
-                            .Replace("{{layout}}", slide.Metadata.GetStringOrDefault("layout", show.Metadata.GetStringOrDefault("layout", "blank")))
-                            .Replace("{{content}}", slide.Html)
-                            .Replace("{{previousIndex}}", (index - 1).ToString(CultureInfo.InvariantCulture))
-                            .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture))
-                            .Replace("{{shtik}}", $"shtik.io/live/{options.Presenter}/{options.Slug}");
-                        await response.WriteAsync(html);
-                        return;
-                    }
-                }
-                response.StatusCode = 404;
-            });
+            routes.MapGet("{index}", new GetSlideAction(routes.ServiceProvider).Invoke);
         }
     }
 }
