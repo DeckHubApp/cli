@@ -38,7 +38,7 @@ namespace shtik.Actions
                     var shown = SetShown(index);
 
                     response.ContentType = "text/html";
-                    var html = Properties.Resources.template_html
+                    var html = Embedded.Web.template_html.Utf8ToString()
                         .Replace("{{title}}", slide.Metadata.GetStringOrDefault("title", show.Metadata.GetStringOrEmpty("title")))
                         .Replace("{{layout}}", slide.Metadata.GetStringOrDefault("layout", show.Metadata.GetStringOrDefault("layout", "blank")))
                         .Replace("{{content}}", slide.Html)
@@ -55,6 +55,7 @@ namespace shtik.Actions
 
         private async Task SetShown(int index)
         {
+            if (_options.Offline) return;
             try
             {
                 await _shtikClient.SetShown(_live, index).ConfigureAwait(false);
@@ -67,6 +68,7 @@ namespace shtik.Actions
 
         private async Task StartOnline(Show show)
         {
+            if (_options.Offline) return;
             try
             {
                 _live = await _shtikClient.StartShow(new StartShow

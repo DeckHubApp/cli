@@ -7,5 +7,6 @@
         public string Place { get; set; }
         public string Api { get; set; }
         public string ApiKey { get; set; }
+        public bool Offline { get; set; }
     }
 }

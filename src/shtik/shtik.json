@@ -1,4 +1,5 @@
 {
+  "offline": true, 
   "presenter": "rendle",
   "slug": "derby-demo",
   "api": "http://localhost:5000/",
