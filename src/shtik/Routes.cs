@@ -32,6 +32,12 @@ namespace shtik
                 return response.Body.WriteAsync(Embedded.Web.theme_css);
             });
 
+            routes.MapGet("rasterize.js", (request, response, data) =>
+            {
+                response.ContentType = "text/javascript; charset=utf-8";
+                return response.Body.WriteAsync(Embedded.Web.rasterize_js);
+            });
+
             routes.MapGet("shtik.js", (request, response, data) =>
             {
                 response.ContentType = "text/javascript; charset=utf-8";
@@ -56,6 +62,16 @@ namespace shtik
             });
 
             routes.MapGet("{index}", new GetSlideAction(routes.ServiceProvider).Invoke);
+
+            routes.MapPost("shot/{id}", async (request, response, data) =>
+            {
+                var fileName = $"{data.Values.GetStringOrEmpty("id")}_shot.jpg";
+                using (var file = File.Create(fileName))
+                {
+                    await request.Body.CopyToAsync(file);
+                }
+                response.StatusCode = 201;
+            });
         }
 
         private static ArraySegment<byte> GetFont(string name)
