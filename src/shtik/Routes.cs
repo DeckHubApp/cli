@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Resources;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Server.Kestrel.Internal.System;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using shtik.Actions;
-using Shtik.Rendering.Markdown;
 
 namespace shtik
 {
     public static class Routes
     {
-        private static readonly ResourceManager ResourceManager = new ResourceManager("shtik.Properties.Resources", typeof(Routes).Assembly);
-
         public static void Router(IRouteBuilder routes)
         {
             routes.MapGet("normalize.css", (request, response, data) =>
@@ -63,15 +53,7 @@ namespace shtik
 
             routes.MapGet("{index}", new GetSlideAction(routes.ServiceProvider).Invoke);
 
-            routes.MapPost("shot/{id}", async (request, response, data) =>
-            {
-                var fileName = $"{data.Values.GetStringOrEmpty("id")}_shot.jpg";
-                using (var file = File.Create(fileName))
-                {
-                    await request.Body.CopyToAsync(file);
-                }
-                response.StatusCode = 201;
-            });
+            routes.MapPost("shot/{index}", new UploadSlideAction(routes.ServiceProvider).Invoke);
         }
 
         private static ArraySegment<byte> GetFont(string name)

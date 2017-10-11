@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -37,10 +39,14 @@ namespace shtik
             return JsonConvert.DeserializeObject<LiveShow>(json);
         }
 
-        public async Task<bool> SetShown(LiveShow show, int index)
+        public async Task<bool> SetShown(string presenter, string slug, int index, Stream slide, string contentType)
         {
-            var content = new StringContent(string.Empty);
-            var response = await _http.PutAsync($"/present/{show.Presenter}/{show.Slug}/{index}", content);
+            var content = new StreamContent(slide);
+            content.Headers.ContentType = MediaTypeHeaderValue.TryParse(contentType, out var mediaType)
+                ? mediaType
+                : MediaTypeHeaderValue.Parse("application/octet-stream");
+
+            var response = await _http.PutAsync($"/present/{presenter}/{slug}/{index}", content);
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogError("Error starting online show: {statusCode} - {reason}", response.StatusCode, response.ReasonPhrase);

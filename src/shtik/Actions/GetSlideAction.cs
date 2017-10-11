@@ -35,8 +35,6 @@ namespace shtik.Actions
                 }
                 if (show.TryGetSlide(index, out var slide))
                 {
-                    var shown = SetShown(index);
-
                     response.ContentType = "text/html";
                     var html = Embedded.Web.template_html.Utf8ToString()
                         .Replace("{{title}}", slide.Metadata.GetStringOrDefault("title", show.Metadata.GetStringOrEmpty("title")))
@@ -46,24 +44,11 @@ namespace shtik.Actions
                         .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture))
                         .Replace("{{shtik}}", $"shtik.io/live/{_options.Presenter}/{_options.Slug}");
 
-                    await Task.WhenAll(response.WriteAsync(html), shown).ConfigureAwait(false);
+                    await response.WriteAsync(html).ConfigureAwait(false);
                     return;
                 }
             }
             response.StatusCode = 404;
-        }
-
-        private async Task SetShown(int index)
-        {
-            if (_options.Offline) return;
-            try
-            {
-                await _shtikClient.SetShown(_live, index).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-            }
         }
 
         private async Task StartOnline(Show show)
