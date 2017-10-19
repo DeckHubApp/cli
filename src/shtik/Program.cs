@@ -2,19 +2,25 @@
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using shtik.Commands;
 
 namespace shtik
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            if (args.Length == 1 && args[0].Equals("new", StringComparison.OrdinalIgnoreCase))
+            {
+                var newCommand = new NewCommand(args);
+                await newCommand.Execute();
+                return;
+            }
             BuildWebHost(args).Run();
         }
 

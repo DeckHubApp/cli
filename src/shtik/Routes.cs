@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using shtik.Actions;
 
@@ -16,12 +20,6 @@ namespace shtik
                 return response.Body.WriteAsync(Embedded.Web.normalize_css);
             });
 
-            routes.MapGet("theme.css", (request, response, data) =>
-            {
-                response.ContentType = "text/css; charset=utf-8";
-                return response.Body.WriteAsync(Embedded.Web.theme_css);
-            });
-
             routes.MapGet("rasterize.js", (request, response, data) =>
             {
                 response.ContentType = "text/javascript; charset=utf-8";
@@ -34,18 +32,23 @@ namespace shtik
                 return response.Body.WriteAsync(Embedded.Web.shtik_js);
             });
 
-            routes.MapGet("fonts/{font}", (request, response, data) =>
+            routes.MapGet("theme/{path*}", (request, response, data) =>
             {
-                if (data.Values.TryGetString("font", out string font))
+                if (data.Values.TryGetString("path", out var path))
                 {
-                    var bytes = GetFont(font);
-                    if (bytes == ArraySegment<byte>.Empty)
+                    var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    var localParts = new string[parts.Length + 1];
+                    localParts[0] = "theme";
+                    parts.CopyTo(localParts, 1);
+                    var localPath = Path.Combine(localParts);
+                    if (File.Exists(localPath))
                     {
-                        response.StatusCode = 404;
-                        return Task.CompletedTask;
+                        var extension = Path.GetExtension(localPath).TrimStart('.');
+                        response.ContentType = MediaTypes.TryGetValue(extension, out var mediaType)
+                            ? mediaType
+                            : $"text/{extension}";
+                        return response.SendFileAsync(localPath, request.HttpContext.RequestAborted);
                     }
-                    response.ContentType = font.EndsWith(".woff") ? "application/font-woff" : "font/woff2";
-                    return response.Body.WriteAsync(bytes);
                 }
                 response.StatusCode = 404;
                 return Task.CompletedTask;
@@ -56,29 +59,12 @@ namespace shtik
             routes.MapPost("shot/{index}", new UploadSlideAction(routes.ServiceProvider).Invoke);
         }
 
-        private static ArraySegment<byte> GetFont(string name)
-        {
-            switch (name)
+        private static readonly Dictionary<string, string> MediaTypes = 
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                case "fira-sans-v7-latin-700.woff":
-                    return Embedded.Web.fonts_fira_sans_v7_latin_700_woff;
-                case "fira-sans-v7-latin-700.woff2":
-                    return Embedded.Web.fonts_fira_sans_v7_latin_700_woff2;
-                case "fira-sans-v7-latin-700italic.woff":
-                    return Embedded.Web.fonts_fira_sans_v7_latin_700italic_woff;
-                case "fira-sans-v7-latin-700italic.woff2":
-                    return Embedded.Web.fonts_fira_sans_v7_latin_700italic_woff2;
-                case "lato-v13-latin-regular.woff":
-                    return Embedded.Web.fonts_lato_v13_latin_regular_woff;
-                case "lato-v13-latin-regular.woff2":
-                    return Embedded.Web.fonts_lato_v13_latin_regular_woff2;
-                case "lato-v13-latin-italic.woff":
-                    return Embedded.Web.fonts_lato_v13_latin_italic_woff;
-                case "lato-v13-latin-italic.woff2":
-                    return Embedded.Web.fonts_lato_v13_latin_italic_woff2;
-                default:
-                    return ArraySegment<byte>.Empty;
-            }
-        }
+                ["css"] = "text/css",
+                ["woff"] = "application/font-woff",
+                ["woff2"] = "font/woff2",
+            };
     }
 }
