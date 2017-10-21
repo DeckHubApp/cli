@@ -32,7 +32,7 @@ namespace shtik
                 return response.Body.WriteAsync(Embedded.Web.shtik_js);
             });
 
-            routes.MapGet("theme/{path*}", (request, response, data) =>
+            routes.MapGet("theme/{*path}", (request, response, data) =>
             {
                 if (data.Values.TryGetString("path", out var path))
                 {

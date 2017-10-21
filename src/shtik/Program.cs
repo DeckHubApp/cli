@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
@@ -89,6 +90,11 @@ namespace shtik
                 }
             }
             return 5555;
+        }
+
+        public static void ReflectionRoots()
+        {
+            SharpYaml.Serialization.Descriptors.DictionaryDescriptor.GetGenericEnumerable<string, object>(new Dictionary<string,object>());
         }
     }
 }
