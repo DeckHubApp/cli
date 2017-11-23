@@ -1,4 +1,5 @@
 {
   "slug": "dev",
-  "api": "http://localhost:5080/"
+  "place": "dnbm", 
+  "api": "https://shtik.io/"
 }
