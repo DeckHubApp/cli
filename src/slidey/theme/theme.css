@@ -1,0 +1,140 @@
+﻿/* fira-sans-700 - latin */
+@font-face { font-family: 'Fira Sans'; font-style: normal; font-weight: 700; src: local('Fira Sans Bold'), local('FiraSans-Bold'), url('fonts/fira-sans-v7-latin-700.woff2') format('woff2'), url('fonts/fira-sans-v7-latin-700.woff') format('woff'); /* IE 9+ */ }
+/* fira-sans-700italic - latin */
+@font-face { font-family: 'Fira Sans'; font-style: italic; font-weight: 700; src: local('Fira Sans Bold Italic'), local('FiraSans-BoldItalic'), url('fonts/fira-sans-v7-latin-700italic.woff2') format('woff2'), url('fonts/fira-sans-v7-latin-700italic.woff') format('woff'); /* IE 9+ */ }
+/* lato-regular - latin */
+@font-face { font-family: 'Lato'; font-style: normal; font-weight: 400; src: local('Lato Regular'), local('Lato-Regular'), url('fonts/lato-v13-latin-regular.woff2') format('woff2'), url('fonts/lato-v13-latin-regular.woff') format('woff'); /* IE 9+ */ }
+/* lato-italic - latin */
+@font-face { font-family: 'Lato'; font-style: italic; font-weight: 400; src: local('Lato Italic'), local('Lato-Italic'), url('fonts/lato-v13-latin-italic.woff2') format('woff2'), url('fonts/lato-v13-latin-italic.woff') format('woff'); /* IE 9+ */ }
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-color: #1e537b;
+    color: white;
+}
+
+main {
+    height: 100%;
+    width: 100%;
+}
+
+article {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+article.title-slide {
+    justify-content: center; /* Vertical center */
+    align-items: center; /* Horizontal center */
+}
+
+article.title-and-content {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.title-slide h1 {
+    font-size: 3em;
+    margin: 0.2em 0;
+}
+
+.title-slide h2 {
+    font-size: 2em;
+    margin: 0.2em 0;
+}
+
+.title-slide h3 {
+    font-size: 1em;
+}
+
+.title-and-content h1 {
+    font-size: 2em;
+    margin: 0.5em 0;
+}
+
+.title-and-content h2 {
+    font-size: 1.5em;
+    margin: 0.2em 0;
+}
+
+.title-and-content li {
+    margin: 12px 0;
+}
+
+nav {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.slide-in-from-right {
+    animation-duration: 0.25s;
+    animation-name: slideInFromRight;
+}
+
+.slide-in-from-left {
+    animation-duration: 0.25s;
+    animation-name: slideInFromLeft;
+}
+
+.slide-out-to-right {
+    animation-duration: 0.25s;
+    animation-name: slideOutToRight;
+}
+
+.slide-out-to-left {
+    animation-duration: 0.25s;
+    animation-name: slideOutToLeft;
+}
+
+@keyframes slideInFromRight {
+    from {
+        left: 100vw;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        left: -100vw;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes slideOutToRight {
+    from {
+        left: 0;
+    }
+    to {
+        left: 100vw;
+    }
+}
+
+@keyframes slideOutToLeft {
+    from {
+        left: 0;
+    }
+    to {
+        left: -100vw;
+    }
+}
+
