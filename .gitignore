@@ -289,4 +289,5 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-src/shtik/theme/
+src/slidey/theme
+src/slidey/images
