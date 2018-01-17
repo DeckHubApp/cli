@@ -10,19 +10,22 @@ using Newtonsoft.Json;
 
 namespace slidey
 {
-    public class SliderClient : ISlideyClient
+    public class SlideyClient : ISlideyClient
     {
-        private readonly ILogger<SliderClient> _logger;
+        private readonly ILogger<SlideyClient> _logger;
         private readonly HttpClient _http;
 
-        public SliderClient(IOptions<SlideyOptions> options, ILogger<SliderClient> logger)
+        public SlideyClient(IOptions<SlideyOptions> options, ILogger<SlideyClient> logger)
         {
             _logger = logger;
-            _http = new HttpClient
+            if (!options.Value.Offline)
             {
-                BaseAddress = new Uri(options.Value.Api),
-            };
-            _http.DefaultRequestHeaders.Add("API-Key", options.Value.ApiKey);
+                _http = new HttpClient
+                {
+                    BaseAddress = new Uri(options.Value.Api),
+                };
+                _http.DefaultRequestHeaders.Add("API-Key", options.Value.ApiKey);
+            }
         }
 
         public async Task<LiveShow> StartShow(StartShow start)

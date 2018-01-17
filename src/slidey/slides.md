@@ -12,6 +12,12 @@ Online at **{{shtik}}**
 
 ---
 
+layout: title-bottom
+...
+# Hello
+
+---
+
 # Shtik
 
 - Markdown-based Presentation tool

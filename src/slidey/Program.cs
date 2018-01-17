@@ -62,7 +62,7 @@ namespace slidey
                 .ConfigureServices((hostingContext, services) =>
                 {
                     services.Configure<SlideyOptions>(hostingContext.Configuration);
-                    services.AddSingleton<ISlideyClient, SliderClient>();
+                    services.AddSingleton<ISlideyClient, SlideyClient>();
                     services.AddRouting();
                 })
                 .Configure(app =>
@@ -92,6 +92,8 @@ namespace slidey
             return 5555;
         }
 
+        // Need to create the generic type in code for AoT compilation
+        // ReSharper disable once UnusedMember.Global
         public static void ReflectionRoots()
         {
             SharpYaml.Serialization.Descriptors.DictionaryDescriptor.GetGenericEnumerable<string, object>(new Dictionary<string,object>());
