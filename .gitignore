@@ -289,5 +289,5 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-src/slidey/theme
-src/slidey/images
+src/slideface/theme
+src/slideface/images
