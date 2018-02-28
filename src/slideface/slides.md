@@ -1,22 +1,23 @@
-﻿title: Shtik
+﻿<!--
+title: SlideFace
 layout: title-and-content
-...
+-->
+<!--
 layout: title-slide
 backgroundImage: ice.jpg
-...
+-->
 # ASP.NET Core 2.0
 ## Ready for Prime Time
 ### @markrendle  &mdash;  rendlelabs.com
 
-Online at **{{shtik}}**
+Online at **{{slideface}}**
 
----
-
+<!--
 layout: title-bottom
-...
+-->
 # Hello
 
----
+<!-- -->
 
 # Shtik
 
@@ -24,26 +25,26 @@ layout: title-bottom
 - Standalone .NET Core 2 runner
 - Online social features
 
----
+<!-- -->
 
-# shtik-cli
+# slideface-cli
 
 - Self-contained .NET Core 2 application
 - Lightweight ASP.NET Core 2
 - <s>MVC</s> Routing
 - Embedded resources
-- Publishes to **shtik.io**
+- Publishes to **slideface.com**
 
----
+<!-- -->
 
-# shtik.io
+# slideface.com
 
 - View slides and notes in real-time
 - Add your own notes to slides
 - Share your notes and view other people's
 - Ask and answer questions
 
----
+<!-- -->
 
 # ASP.NET Core MVC 2.0
 
@@ -51,7 +52,7 @@ layout: title-bottom
 - Startup.cs
 - MVC
 
----
+<!-- -->
 
 # Authentication
 
@@ -60,7 +61,7 @@ layout: title-bottom
 - ASP.NET Core Identity
 - EF Core &amp; PostgreSQL
 
----
+<!-- -->
 
 # EF Core 2.0
 
@@ -68,7 +69,7 @@ layout: title-bottom
 - Migrations
 - Command-line tooling
 
----
+<!-- -->
 
 # Realtime
 
@@ -77,7 +78,7 @@ layout: title-bottom
 - Manage shows (i.e. rooms) manually
 - Drive with Redis
 
----
+<!-- -->
 
 # Microservices
 
@@ -86,7 +87,7 @@ layout: title-bottom
 - Notes
 - Questions
 
----
+<!-- -->
 
 # Docker
 
@@ -95,7 +96,7 @@ layout: title-bottom
 - docker-compose
   - Running migrations
 
----
+<!-- -->
 
 # Production
 
@@ -103,7 +104,7 @@ layout: title-bottom
 - Traefik
 - CloudFlare
 
----
+<!-- -->
 
 # Fin
-## [shtik.io]()
+## [slideface.com]()

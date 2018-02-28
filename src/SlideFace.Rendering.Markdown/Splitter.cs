@@ -8,10 +8,10 @@ namespace SlideFace.Rendering.Markdown
     public sealed class Splitter : IDisposable
     {
         private readonly StringReader _reader;
-        private readonly StringBuilder _builder = new StringBuilder();
-        private bool _first = true;
-        private string _firstSlideFrontMatter;
-        private string _firstSlideMarkdown;
+        private readonly StringBuilder _frontMatterBuilder = new StringBuilder();
+        private readonly StringBuilder _markdownBuilder = new StringBuilder();
+        private bool _inFrontMatter;
+        private bool _emptyFrontMatter;
 
         public Splitter(string markdown)
         {
@@ -22,70 +22,89 @@ namespace SlideFace.Rendering.Markdown
         {
             CheckDisposed();
             if (_reader.Peek() == -1) return null;
-            _builder.Clear();
-            var list = new List<string>();
+            _frontMatterBuilder.Clear();
+
+            if (!ReadPastNextOpenComment())
+            {
+                return default;
+            }
             while (_reader.Peek() >= 0)
             {
                 var line = _reader.ReadLine();
-                if (line.StartsWith("..."))
+                if (line.StartsWith("-->"))
                 {
-                    list.Add(_builder.ToString());
-                    _builder.Clear();
-                    continue;
-                }
-                if (line.StartsWith("---"))
-                {
-                    list.Add(_builder.ToString());
                     break;
                 }
-                _builder.AppendLine(line);
+                _frontMatterBuilder.AppendLine(line);
             }
 
-            switch (list.Count)
-            {
-                case 0:
-                    return string.Empty;
-                case 1:
-                    _firstSlideMarkdown = list[0];
-                    return string.Empty;
-                case 2:
-                    _firstSlideFrontMatter = list[0];
-                    _firstSlideMarkdown = list[1];
-                    return string.Empty;
-                default:
-                    _firstSlideFrontMatter = list[1];
-                    _firstSlideMarkdown = list[2];
-                    return list[0];
-            }
+            return _frontMatterBuilder.ToString();
         }
 
         public (string, string) ReadNextBlock()
         {
             CheckDisposed();
-            if (_first)
-            {
-                _first = false;
-                return (_firstSlideFrontMatter, _firstSlideMarkdown);
-            }
-            if (_reader.Peek() == -1) return (null, null);
-            _builder.Clear();
-            string frontMatter = string.Empty;
+            if (_reader.Peek() == -1) return default;
+
+            string frontMatter = ReadSlideFrontMatter();
+
+            _markdownBuilder.Clear();
             while (_reader.Peek() >= 0)
             {
                 var line = _reader.ReadLine();
-                if (line.StartsWith("..."))
+                if (line.StartsWith("<!--"))
                 {
-                    frontMatter = _builder.ToString();
-                    _builder.Clear();
-                    continue;
+                    _inFrontMatter = true;
+                    _emptyFrontMatter = line.EndsWith("-->");
+                    return (frontMatter, _markdownBuilder.ToString().Trim());
                 }
-                else if (line.StartsWith("---"))
-                {
-                    return (frontMatter, _builder.ToString().Trim());
-                }
-                _builder.AppendLine(line);
+                _markdownBuilder.AppendLine(line);
             }
-            return (frontMatter, _builder.ToString().Trim());
+            return (frontMatter, _markdownBuilder.ToString().Trim());
+        }
+
+        private string ReadSlideFrontMatter()
+        {
+            if (!ReadPastNextOpenComment()) return default;
+            
+            if (_emptyFrontMatter)
+            {
+                _emptyFrontMatter = false;
+                return string.Empty;
+            }
+            
+            _frontMatterBuilder.Clear();
+            while (_reader.Peek() >= 0)
+            {
+                var line = _reader.ReadLine();
+                if (line.StartsWith("-->"))
+                {
+                    return _frontMatterBuilder.ToString().Trim();
+                }
+                _frontMatterBuilder.AppendLine(line);
+            }
+            return _frontMatterBuilder.ToString().Trim();
+        }
+
+        private bool ReadPastNextOpenComment()
+        {
+            if (_inFrontMatter || _emptyFrontMatter)
+            {
+                _inFrontMatter = false;
+                return true;
+            }
+            
+            while (_reader.Peek() >= 0)
+            {
+                var line = _reader.ReadLine();
+                if (line.StartsWith("<!--"))
+                {
+                    _emptyFrontMatter = line.EndsWith("-->");
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void CheckDisposed()

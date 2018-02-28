@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/RendleLabs/Shtik.Rendering</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RendleLabs/Shtik.Rendering/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/RendleLabs/Shtik.Rendering</RepositoryUrl>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.13.1" />
