@@ -28,7 +28,8 @@
       "fonts_lato_v13_latin_regular_woff2": "Web/fonts/lato-v13-latin-regular.woff2"
     },
     "Empty": {
-      "slides_md": "Empty/slides.md"
+      "slides_md": "Empty/slides.md",
+      "slidable_json": "Empty/slidable.json" 
     }
   }
 }

@@ -1,14 +1,16 @@
-﻿title: New Slidable Presentation
+﻿<!--
+title: New Slidable Presentation
 layout: title-and-content
-...
+-->
+<!--
 layout: title-slide
-...
+-->
 # New Slidable Presentation
 ### YOURNAME  &mdash;  ETC.
 
 Online at **{{slidable}}**
 
----
+<!-- -->
 
 # Slide 1
 
@@ -16,7 +18,7 @@ Online at **{{slidable}}**
 - Overview
 - Of Presentation
 
------
+<!-- -->
 
 # Fin
 ## [slidable.io](https://slidable.io)
