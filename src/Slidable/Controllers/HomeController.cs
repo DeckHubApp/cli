@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Slidable
+namespace Slidable.Controllers
 {
     [Route("")]
     public class HomeController

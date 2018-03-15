@@ -32,7 +32,6 @@ namespace Slidable
                 app.UseDeveloperExceptionPage();
             }
             app.UseMvc();
-            //app.UseRouter(builder => Routes.Router(builder));
             app.Run(ctx =>
             {
                 ctx.Response.Redirect("/0");

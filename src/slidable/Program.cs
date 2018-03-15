@@ -33,7 +33,6 @@ namespace Slidable
             var port = GetPort(args);
             return WebHost.CreateDefaultBuilder(args)
                  .UseUrls($"http://localhost:{port}")
-                 .UseStartup<Startup>()
                  .ConfigureAppConfiguration((_, config) =>
                  {
                      var userProfileConfig =
@@ -67,21 +66,7 @@ namespace Slidable
                          logging.SetMinimumLevel(logLevel).AddConsole();
                      }
                  })
-                //.ConfigureServices((hostingContext, services) =>
-                //{
-                //    services.Configure<SlidableOptions>(hostingContext.Configuration);
-                //    services.AddSingleton<ISlidableClient, SlidableClient>();
-                //    services.AddRouting();
-                //})
-                //.Configure(app =>
-                //{
-                //    app.UseRouter(Routes.Router);
-                //    app.Run(ctx =>
-                //    {
-                //        ctx.Response.Redirect("/0");
-                //        return Task.CompletedTask;
-                //    });
-                //})
+                 .UseStartup<Startup>()
                 .Build();
         }
 
