@@ -22,7 +22,7 @@ var Slidable;
                 var headers = new Headers();
                 headers.append("Content-Type", "image/jpeg");
                 headers.append("Length", b.size.toString());
-                fetch("shot/" + currentPage, {
+                fetch("/shot/" + currentPage, {
                     method: "POST",
                     body: b,
                     headers: headers

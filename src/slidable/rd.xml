@@ -2,7 +2,6 @@
   <Application>
 
     <Assembly Name="slidable" Dynamic="Required All" />
-    
     <Assembly Name="Markdig" Dynamic="Required All" />
     <Assembly Name="SharpYaml" Dynamic="Required All" />
     <Assembly Name="Slidable.Rendering.Markdown" Dynamic="Required All" />
@@ -24,17 +23,15 @@
             Dynamic="Required All" />
       <Type Name="Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteValidator" Dynamic="Required All" />
     </Assembly>
+
     <Assembly Name="Microsoft.Extensions.Options">
-      <Type
-        Name="Microsoft.Extensions.Options.OptionsManager`1[[Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions,Microsoft.AspNetCore.Server.Kestrel.Core]]"
-        Dynamic="Required All" />
-      <Type
-        Name="Microsoft.Extensions.Options.OptionsFactory`1[[Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions,Microsoft.AspNetCore.Server.Kestrel.Core]]"
-        Dynamic="Required All" />
-      <Type
-        Name="Microsoft.Extensions.Options.OptionsMonitor`1[[Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions,Microsoft.Extensions.Logging.Console]]"
-        Dynamic="Required All" />
+      <Type Name="Microsoft.Extensions.Options.OptionsManager`1[[Slidable.SlidableOptions,slidable]]" Dynamic="Required All" />
+      <Type Name="Microsoft.Extensions.Options.OptionsFactory`1[[Slidable.SlidableOptions,slidable]]" Dynamic="Required All" />
+      <Type Name="Microsoft.Extensions.Options.OptionsManager`1[[Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions,Microsoft.AspNetCore.Server.Kestrel.Core]]" Dynamic="Required All" />
+      <Type Name="Microsoft.Extensions.Options.OptionsFactory`1[[Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions,Microsoft.AspNetCore.Server.Kestrel.Core]]" Dynamic="Required All" />
+      <Type Name="Microsoft.Extensions.Options.OptionsMonitor`1[[Microsoft.Extensions.Logging.Console.ConsoleLoggerOptions,Microsoft.Extensions.Logging.Console]]" Dynamic="Required All" />
     </Assembly>
+
     <Assembly Name="Microsoft.AspNetCore.Mvc.Core" Dynamic="Required All" />
     <Assembly Name="Microsoft.AspNetCore.Routing">
       <Type Name="Microsoft.AspNetCore.Routing.Internal.RoutingMarkerService" Dynamic="Required All" />
