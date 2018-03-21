@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Slidable.Routes;
 
 namespace Slidable
 {
@@ -23,34 +24,19 @@ namespace Slidable
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting();
-            services.AddMvcCore().AddJsonFormatters();
-
-            var slideableOptions = new SlidableOptions
-            {
-                Api = Configuration["Api"],
-                ApiKey = Configuration["ApiKey"],
-                Offline = string.Equals(Configuration["Offline"], "true", StringComparison.OrdinalIgnoreCase),
-                Place = Configuration["Place"],
-                Presenter = Configuration["Presenter"],
-                Slug = Configuration["Slug"]
-            };
-            Console.WriteLine(slideableOptions.Slug);
-            Things.SlidableOptions = slideableOptions;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            Things.LoggerFactory = loggerFactory;
-            Things.SlidableClient =
-                new SlidableClient(Things.SlidableOptions, loggerFactory.CreateLogger<SlidableClient>());
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
-            ConfigureRoutes(app);
+            ConfigureRoutes(app, loggerFactory);
+            
             app.Run(ctx =>
             {
                 ctx.Response.Redirect("/slidable/0");
@@ -58,11 +44,19 @@ namespace Slidable
             });
         }
 
-        private void ConfigureRoutes(IApplicationBuilder app)
+        private void ConfigureRoutes(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            var options = SlidableOptions.Bind(Configuration);
+            var client =
+                new SlidableClient(options, loggerFactory.CreateLogger<SlidableClient>());
+            
             app.UseRouter(routes =>
             {
-                routes.MapPost("shot/{index}", (req, res, data) => ShotHandler.Handle(req, res, data));
+                InternalFilesRouter.Add(routes);
+                ThemeRouter.Add(routes);
+                ImagesRouter.Add(routes);
+                SlidableRouter.Add(routes, client, options, loggerFactory);
+                ShotRouter.Add(routes, client, options, loggerFactory);
             });
         }
     }

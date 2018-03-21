@@ -1,50 +1,44 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Slidable;
 using Slidable.Embedded;
 using Slidable.Rendering.Markdown;
 
-namespace slidable.Controllers
+namespace Slidable.Routes
 {
-    [Route("slidable")]
-    public class SlidableController
+    // ReSharper disable once ConvertToStaticClass
+    public sealed class SlidableRouter
     {
-        private static int _started = 0;
+        private static int _started;
         private static LiveShow _live;
-        private readonly SlidableOptions _options;
-        private readonly ISlidableClient _client;
-        private readonly ILogger<SlidableController> _logger;
+        private static ISlidableClient _client;
+        private static SlidableOptions _options;
+        private static ILogger<SlidableRouter> _logger;
 
-        public SlidableController()
+        public static void Add(IRouteBuilder routes, ISlidableClient client, SlidableOptions options,
+            ILoggerFactory loggerFactory)
         {
-            _logger = Things.LoggerFactory.CreateLogger<SlidableController>();
-            _options = Things.SlidableOptions;
-            _client = Things.SlidableClient;
+            _client = client;
+            _options = options;
+            _logger = loggerFactory.CreateLogger<SlidableRouter>();
+            routes.MapPost("slidable/{index}",
+                (req, res, data) => data.Values.TryGetInt("index", out var index)
+                    ? Get(req, res, index)
+                    : res.NotFoundAsync());
         }
 
-        [HttpGet("{index}")]
-        public IActionResult Get(int index)
+        private static async Task Get(HttpRequest req, HttpResponse res, int index)
         {
-            return GetImpl(index.ToString()).GetAwaiter().GetResult();
-        }
-
-        private async Task<IActionResult> GetImpl(string index)
-        {
-            if (!int.TryParse(index, out int number))
-            {
-                return new NotFoundResult();
-            }
-            var show = await Slides.LoadAsync();//.GetAwaiter().GetResult();
+            var show = await Slides.LoadAsync();
             if (Interlocked.Exchange(ref _started, 1) == 0)
             {
-                await StartOnline(show);//.GetAwaiter().GetResult();
+                await StartOnline(show);
             }
-            if (show.TryGetSlide(number, out var slide))
+            if (show.TryGetSlide(index, out var slide))
             {
                 var backgroundImage = slide.Metadata.GetStringOrDefault("backgroundImage", show.Metadata.GetStringOrEmpty("backgroundImage"));
                 var html = Web.template_html.Utf8ToString()
@@ -52,21 +46,19 @@ namespace slidable.Controllers
                     .Replace("{{layout}}", slide.Metadata.GetStringOrDefault("layout", show.Metadata.GetStringOrDefault("layout", "blank")))
                     .Replace("{{inlineStyle}}", BackgroundStyle.Generate(backgroundImage))
                     .Replace("{{content}}", slide.Html)
-                    .Replace("{{previousIndex}}", (number - 1).ToString(CultureInfo.InvariantCulture))
+                    .Replace("{{previousIndex}}", (index - 1).ToString(CultureInfo.InvariantCulture))
                     .Replace("{{nextIndex}}", (index + 1).ToString(CultureInfo.InvariantCulture))
                     .Replace("{{slidable}}", _options.Api);
 
-                return new ContentResult
-                {
-                    ContentType = "text/html",
-                    Content = html
-                };
+                res.ContentType = "text/html";
+                res.StatusCode = 200;
+                await res.WriteAsync(html);
             }
 
-            return new NotFoundResult();
+            res.StatusCode = 404;
         }
-
-        private async Task StartOnline(Show show)
+        
+        private static async Task StartOnline(Show show)
         {
             if (_options.Offline)
             {
@@ -90,5 +82,7 @@ namespace slidable.Controllers
                 _live = LiveShow.Empty;
             }
         }
+
+        private SlidableRouter() { }
     }
 }
