@@ -8,9 +8,10 @@ namespace Slidable
     public class SlidableOptions
     {
         private bool _offline = true;
+        public string Place { get; set; }
         public string Presenter { get; set; }
         public string Slug { get; set; }
-        public string Place { get; set; }
+        public string Title { get; set; }
         public string Api { get; set; }
         public string ApiKey { get; set; }
 

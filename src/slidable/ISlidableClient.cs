@@ -6,6 +6,6 @@ namespace Slidable
     public interface ISlidableClient
     {
         Task<LiveShow> StartShow(StartShow start);
-        Task SetShown(string presenter, string slug, int index, Stream slide, string contentType);
+        Task SetShown(string place, string presenter, string slug, int index, Stream slide, string contentType);
     }
 }

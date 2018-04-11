@@ -10,28 +10,26 @@ using Slidable.Rendering.Markdown;
 
 namespace Slidable.Routes
 {
-    // ReSharper disable once ConvertToStaticClass
-    public sealed class SlidableRouter
+    public static class SlidableRouter
     {
         private static int _started;
-        private static LiveShow _live;
         private static ISlidableClient _client;
         private static SlidableOptions _options;
-        private static ILogger<SlidableRouter> _logger;
+        private static ILogger _logger;
 
         public static void Add(IRouteBuilder routes, ISlidableClient client, SlidableOptions options,
             ILoggerFactory loggerFactory)
         {
             _client = client;
             _options = options;
-            _logger = loggerFactory.CreateLogger<SlidableRouter>();
-            routes.MapPost("slidable/{index}",
+            _logger = loggerFactory.CreateLogger(typeof(SlidableRouter));
+            routes.MapGet("slidable/{index}",
                 (req, res, data) => data.Values.TryGetInt("index", out var index)
-                    ? Get(req, res, index)
+                    ? Get(res, index)
                     : res.NotFoundAsync());
         }
 
-        private static async Task Get(HttpRequest req, HttpResponse res, int index)
+        private static async Task Get(HttpResponse res, int index)
         {
             var show = await Slides.LoadAsync();
             if (Interlocked.Exchange(ref _started, 1) == 0)
@@ -53,6 +51,7 @@ namespace Slidable.Routes
                 res.ContentType = "text/html";
                 res.StatusCode = 200;
                 await res.WriteAsync(html);
+                return;
             }
 
             res.StatusCode = 404;
@@ -66,23 +65,19 @@ namespace Slidable.Routes
             }
             try
             {
-                _live = await _client.StartShow(new StartShow
+                await _client.StartShow(new StartShow
                 {
-                    Markdown = Slides.Markdown,
                     Presenter = _options.Presenter,
                     Place = _options.Place,
                     Slug = _options.Slug,
                     Time = DateTimeOffset.Now,
-                    Title = show.Metadata.GetStringOrEmpty("title")
+                    Title = _options.Title ?? show.Metadata.GetStringOrEmpty("title")
                 }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                _live = LiveShow.Empty;
             }
         }
-
-        private SlidableRouter() { }
     }
 }

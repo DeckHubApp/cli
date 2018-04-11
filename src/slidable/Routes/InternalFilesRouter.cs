@@ -1,5 +1,4 @@
-﻿using System.Dynamic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Slidable.Embedded;
@@ -14,14 +13,14 @@ namespace Slidable.Routes
             {
                 if (data.Values.TryGetString("file", out var file))
                 {
-                    return Get(req, res, file);
+                    return Get(res, file);
                 }
 
                 return res.NotFoundAsync();
             });
         }
 
-        private static Task Get(HttpRequest req, HttpResponse res, string file)
+        private static Task Get(HttpResponse res, string file)
         {
             switch (file)
             {

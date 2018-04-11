@@ -15,14 +15,14 @@ namespace Slidable.Routes
             {
                 if (data.Values.TryGetString("path", out var path))
                 {
-                    return Get(req, res, path);
+                    return Get(res, path);
                 }
 
                 return res.NotFoundAsync();
             });
         }
 
-        private static Task Get(HttpRequest req, HttpResponse res, string path)
+        private static Task Get(HttpResponse res, string path)
         {
             var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
             var localParts = new string[parts.Length + 1];

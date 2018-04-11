@@ -1,6 +1,6 @@
 {
   "slug": "dev",
   "place": "dnbm", 
-  "api": "https://slidable.io/",
-  "offline": true
+  "api": "http://microstuff.io/",
+  "offline": false
 }

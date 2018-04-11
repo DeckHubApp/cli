@@ -9,9 +9,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Web\slidable.ts" />
+    <None Remove="images\**" />
+    <None Remove="theme\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="images" />
     <Folder Include="Web\fonts\" />
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +22,8 @@
     <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-26315-02" />
   </ItemGroup>
   <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
     <TypeScriptCompile Include="Web\slidable.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +31,18 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Slidable.Rendering.Markdown\Slidable.Rendering.Markdown.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="images\**" />
+    <Compile Remove="theme\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="images\**" />
+    <EmbeddedResource Remove="theme\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="images\**" />
+    <Content Remove="theme\**" />
   </ItemGroup>
   <Target Name="DotnetEmbed" BeforeTargets="Build">
     <Exec Command="dotnet embed" />

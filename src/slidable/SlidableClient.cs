@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Slidable
@@ -32,7 +31,7 @@ namespace Slidable
         {
             var json = JsonConvert.SerializeObject(start);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var requestUri = $"/present/{start.Presenter}/start";
+            var requestUri = $"/presenter/{start.Presenter}/start";
             Console.WriteLine($"Starting show at {requestUri}");
             var response = await _http.PostAsync(requestUri, content);
             if (!response.IsSuccessStatusCode)
@@ -44,18 +43,18 @@ namespace Slidable
             return JsonConvert.DeserializeObject<LiveShow>(json);
         }
 
-        public Task SetShown(string presenter, string slug, int index, Stream slide, string contentType)
+        public Task SetShown(string place, string presenter, string slug, int index, Stream slide, string contentType)
         {
             return Task.WhenAll(
-                SetSlideShown(presenter, slug, index),
-                UploadSlideImage(presenter, slug, index, slide, contentType)
+                SetSlideShown(place, presenter, slug, index),
+                UploadSlideImage(place, presenter, slug, index, slide, contentType)
             );
         }
 
-        private async Task SetSlideShown(string presenter, string slug, int index)
+        private async Task SetSlideShown(string place, string presenter, string slug, int index)
         {
             var content = new StringContent(string.Empty);
-            var response = await _http.PutAsync($"/present/{presenter}/{slug}/{index}", content);
+            var response = await _http.PutAsync($"/presenter/{place}/{presenter}/{slug}/{index}", content);
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogError("Error showing slide {index}: {statusCode} - {reason}",
@@ -63,14 +62,14 @@ namespace Slidable
             }
         }
 
-        private async Task UploadSlideImage(string presenter, string slug, int index, Stream slide, string contentType)
+        private async Task UploadSlideImage(string place, string presenter, string slug, int index, Stream slide, string contentType)
         {
             var content = new StreamContent(slide);
             content.Headers.ContentType = MediaTypeHeaderValue.TryParse(contentType, out var mediaType)
                 ? mediaType
                 : MediaTypeHeaderValue.Parse("application/octet-stream");
 
-            var response = await _http.PutAsync($"/slides/{presenter}/{slug}/{index}", content);
+            var response = await _http.PutAsync($"/slides/{place}/{presenter}/{slug}/{index}", content);
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogError("Error uploading slide {index}: {statusCode} - {reason}",
