@@ -1,16 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Markdig.Syntax.Inlines;
 
 namespace Slidable.Rendering.Markdown
 {
     public sealed class Splitter : IDisposable
     {
         private readonly StringReader _reader;
-        private readonly StringBuilder _frontMatterBuilder = new StringBuilder();
-        private readonly StringBuilder _markdownBuilder = new StringBuilder();
-        private bool _inFrontMatter;
-        private bool _emptyFrontMatter;
+        private readonly StringBuilder _builder = new StringBuilder();
 
         public Splitter(string markdown)
         {
@@ -21,89 +20,144 @@ namespace Slidable.Rendering.Markdown
         {
             CheckDisposed();
             if (_reader.Peek() == -1) return null;
-            _frontMatterBuilder.Clear();
+            _builder.Clear();
 
-            if (!ReadPastNextOpenComment())
-            {
-                return default;
-            }
             while (_reader.Peek() >= 0)
             {
                 var line = _reader.ReadLine();
-                if (line.StartsWith("-->"))
+                Debug.Assert(line != null);
+                if (line.StartsWith("***"))
                 {
                     break;
                 }
-                _frontMatterBuilder.AppendLine(line);
+
+                if (!line.StartsWith("---"))
+                {
+                    _builder.AppendLine(line);
+                }
             }
 
-            return _frontMatterBuilder.ToString();
+            return _builder.ToString();
         }
 
-        public (string, string) ReadNextBlock()
+        public Block ReadNextBlock()
         {
             CheckDisposed();
             if (_reader.Peek() == -1) return default;
 
-            string frontMatter = ReadSlideFrontMatter();
-
-            _markdownBuilder.Clear();
-            while (_reader.Peek() >= 0)
-            {
-                var line = _reader.ReadLine();
-                if (line.StartsWith("<!--"))
-                {
-                    _inFrontMatter = true;
-                    _emptyFrontMatter = line.EndsWith("-->");
-                    return (frontMatter, _markdownBuilder.ToString().Trim());
-                }
-                _markdownBuilder.AppendLine(line);
-            }
-            return (frontMatter, _markdownBuilder.ToString().Trim());
+            var (frontMatter, foundFrontMatter) = ReadSlideFrontMatter();
+            var (markdown, hasNotes) = ReadSlide(foundFrontMatter ? null : frontMatter);
+            var notes = hasNotes ? ReadNotes() : null;
+            
+            return new Block(foundFrontMatter ? frontMatter : null, markdown, notes);
         }
 
-        private string ReadSlideFrontMatter()
+        private (string, bool) ReadSlide(string pre)
         {
-            if (!ReadPastNextOpenComment()) return default;
-            
-            if (_emptyFrontMatter)
+            _builder.Clear();
+            if (pre != null)
             {
-                _emptyFrontMatter = false;
-                return string.Empty;
+                _builder.AppendLine(pre);
             }
-            
-            _frontMatterBuilder.Clear();
+            bool previousLineWasEmpty = false;
+            bool inSyntax = false;
             while (_reader.Peek() >= 0)
             {
                 var line = _reader.ReadLine();
-                if (line.StartsWith("-->"))
+                Debug.Assert(line != null);
+
+                if (!inSyntax)
                 {
-                    return _frontMatterBuilder.ToString().Trim();
+                    line = line.TrimEnd();
+                    if (line == "---" && previousLineWasEmpty)
+                    {
+                        return (_builder.ToString(), true);
+                    }
+                    
+                    if (line == "***")
+                    {
+                        return (_builder.ToString(), false);
+                    }
+
+                    if (line == "")
+                    {
+                        previousLineWasEmpty = true;
+                    }
                 }
-                _frontMatterBuilder.AppendLine(line);
+
+                if (line.StartsWith("```") || line.StartsWith("~~~"))
+                {
+                    inSyntax = !inSyntax;
+                }
+                
+                _builder.AppendLine(line);
             }
-            return _frontMatterBuilder.ToString().Trim();
+            return (_builder.ToString(), false);
         }
 
-        private bool ReadPastNextOpenComment()
+        private string ReadNotes()
         {
-            if (_inFrontMatter || _emptyFrontMatter)
-            {
-                _inFrontMatter = false;
-                return true;
-            }
-            
+            _builder.Clear();
+            bool inSyntax = false;
             while (_reader.Peek() >= 0)
             {
                 var line = _reader.ReadLine();
-                if (line.StartsWith("<!--"))
-                {
-                    _emptyFrontMatter = line.EndsWith("-->");
-                    return true;
-                }
-            }
+                Debug.Assert(line != null);
 
-            return false;
+                if (!inSyntax)
+                {
+                    line = line.TrimEnd();
+                    
+                    if (line == "***")
+                    {
+                        return _builder.ToString();
+                    }
+                }
+
+                if (line.StartsWith("```") || line.StartsWith("~~~"))
+                {
+                    inSyntax = !inSyntax;
+                }
+                
+                _builder.AppendLine(line);
+            }
+            return _builder.ToString();
+        }
+
+        private (string, bool) ReadSlideFrontMatter()
+        {
+            _builder.Clear();
+            bool foundFrontMatter = false;
+            while (_reader.Peek() >= 0)
+            {
+                var line = _reader.ReadLine();
+                Debug.Assert(line != null);
+
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+                
+                if (line.StartsWith("---"))
+                {
+                    if (foundFrontMatter)
+                    {
+                        return (_builder.ToString().Trim(), true);
+                    }
+
+                    foundFrontMatter = true;
+                    continue;
+                }
+                else
+                {
+                    if (!foundFrontMatter)
+                    {
+                        return (line, false);
+                    }
+                }
+                _builder.AppendLine(line);
+            }
+            return (_builder.ToString().Trim(), true);
         }
 
         private void CheckDisposed()

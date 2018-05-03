@@ -16,14 +16,18 @@ namespace Slidable.Rendering.Markdown
             _pipeline = pipelineBuilder.Build();
         }
 
-        public Slide Render(string frontMatter, string markdown)
+        public Slide Render(string frontMatter, string markdown, string notes)
         {
             var metadata = new Dictionary<string, object>();
-            _serializer.DeserializeInto(frontMatter, metadata);
+            if (!string.IsNullOrWhiteSpace(frontMatter))
+            {
+                _serializer.DeserializeInto(frontMatter, metadata);
+            }
             return new Slide
             {
                 Metadata = metadata,
-                Html = Markdig.Markdown.ToHtml(markdown, _pipeline)
+                Html = Markdig.Markdown.ToHtml(markdown, _pipeline),
+                NotesHtml = string.IsNullOrWhiteSpace(notes) ? "" : Markdig.Markdown.ToHtml(notes, _pipeline)
             };
         }
     }

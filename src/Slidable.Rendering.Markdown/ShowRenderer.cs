@@ -22,10 +22,11 @@ namespace Slidable.Rendering.Markdown
         {
             while (true)
             {
-                var (frontMatter, markdown) = splitter.ReadNextBlock();
-                if (string.IsNullOrWhiteSpace(frontMatter) && string.IsNullOrWhiteSpace(markdown)) yield break;
-                yield return _slideRenderer.Render(frontMatter, markdown);
+                var block = splitter.ReadNextBlock();
+                if (string.IsNullOrWhiteSpace(block.FrontMatter) && string.IsNullOrWhiteSpace(block.Slide)) yield break;
+                yield return _slideRenderer.Render(block.FrontMatter, block.Slide, block.Notes);
             }
         }
     }
+    
 }

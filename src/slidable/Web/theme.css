@@ -22,7 +22,7 @@ h1 {
 
 body {
     font-family: 'Lato', sans-serif;
-    font-size: 32px;
+    font-size: 2.5em;
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
@@ -60,26 +60,26 @@ article.title-bottom {
 }
 
 .title-slide h1 {
-    font-size: 3em;
+    font-size: 4em;
     margin: 0.2em 0;
 }
 
 .title-slide h2 {
-    font-size: 2em;
+    font-size: 3em;
     margin: 0.2em 0;
 }
 
 .title-slide h3 {
-    font-size: 1em;
+    font-size: 2.5em;
 }
 
 .title-and-content h1 {
-    font-size: 2em;
+    font-size: 3em;
     margin: 0.5em 0;
 }
 
 .title-and-content h2 {
-    font-size: 1.5em;
+    font-size: 2.5em;
     margin: 0.2em 0;
 }
 

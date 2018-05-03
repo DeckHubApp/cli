@@ -1,23 +1,25 @@
-﻿<!--
+﻿---
 title: Slidable
 layout: title-and-content
--->
-<!--
+---
+***
+---
 layout: title-slide
 backgroundImage: ice.jpg
--->
+---
 # ASP.NET Core 2.0
 ## Ready for Prime Time
 ### @markrendle  &mdash;  rendlelabs.com
 
 Online at **{{slidable}}**
 
-<!--
+***
+---
 layout: title-bottom
--->
+---
 # Hello
 
-<!-- -->
+***
 
 # Slidable
 
@@ -25,7 +27,7 @@ layout: title-bottom
 - Standalone .NET Core 2 runner
 - Online social features
 
-<!-- -->
+***
 
 # slidable-cli
 
@@ -35,7 +37,7 @@ layout: title-bottom
 - Embedded resources
 - Publishes to **slidable.io**
 
-<!-- -->
+***
 
 # slidable.io
 
@@ -44,7 +46,7 @@ layout: title-bottom
 - Share your notes and view other people's
 - Ask and answer questions
 
-<!-- -->
+***
 
 # ASP.NET Core MVC 2.0
 
@@ -52,7 +54,7 @@ layout: title-bottom
 - Startup.cs
 - MVC
 
-<!-- -->
+***
 
 # Authentication
 
@@ -61,7 +63,7 @@ layout: title-bottom
 - ASP.NET Core Identity
 - EF Core &amp; PostgreSQL
 
-<!-- -->
+***
 
 # EF Core 2.0
 
@@ -69,7 +71,7 @@ layout: title-bottom
 - Migrations
 - Command-line tooling
 
-<!-- -->
+***
 
 # Realtime
 
@@ -78,7 +80,7 @@ layout: title-bottom
 - Manage shows (i.e. rooms) manually
 - Drive with Redis
 
-<!-- -->
+***
 
 # Microservices
 
@@ -87,7 +89,7 @@ layout: title-bottom
 - Notes
 - Questions
 
-<!-- -->
+***
 
 # Docker
 
@@ -96,7 +98,7 @@ layout: title-bottom
 - docker-compose
   - Running migrations
 
-<!-- -->
+***
 
 # Production
 
@@ -104,7 +106,7 @@ layout: title-bottom
 - Traefik
 - CloudFlare
 
-<!-- -->
+***
 
 # Fin
 ## [slidable.io]()

@@ -10,39 +10,41 @@ namespace Slidable.Rendering.Markdown.Tests
         public void ReadsDeckFrontMatterAndFirstSlide()
         {
             
-            const string text = "<!--\ntitle: Test\n-->\n<!--\nlayout: title-slide\n-->\nOne";
+            const string text = "---\ntitle: Test\n---\n***\n---\nlayout: title-slide\n---\nOne";
             using (var target = new Splitter(text))
             {
                 var fm = target.ReadFrontMatter();
-                var (_, md1) = target.ReadNextBlock();
+                var block = target.ReadNextBlock();
                 Assert.Equal("title: Test", fm.Trim());
-                Assert.Equal("One", md1);
+                Assert.Equal("layout: title-slide", block.FrontMatter);
+                Assert.Equal("One", block.Slide);
+                Assert.Null(block.Notes);
             }
         }
         
         [Fact]
         public void SplitsAtHtmlComment()
         {
-            const string text = "<!--\n-->\nOne\n<!--\n-->\nTwo";
+            const string text = "***\n\nOne\n***\nTwo";
             using (var target = new Splitter(text))
             {
-                var (_, md1) = target.ReadNextBlock();
-                var (_, md2) = target.ReadNextBlock();
-                Assert.Equal("One", md1);
-                Assert.Equal("Two", md2);
+                var block1  = target.ReadNextBlock();
+                var block2 = target.ReadNextBlock();
+                Assert.Equal("One", block1.Slide);
+                Assert.Equal("Two", block2.Slide);
             }
         }
         
         [Fact]
         public void SplitsAtEmptyHtmlComment()
         {
-            const string text = "<!-- -->\nOne\n<!-- -->\nTwo";
+            const string text = "One\n***\nTwo";
             using (var target = new Splitter(text))
             {
-                var (_, md1) = target.ReadNextBlock();
-                var (_, md2) = target.ReadNextBlock();
-                Assert.Equal("One", md1);
-                Assert.Equal("Two", md2);
+                var block1 = target.ReadNextBlock();
+                var block2 = target.ReadNextBlock();
+                Assert.Equal("One", block1.Slide);
+                Assert.Equal("Two", block2.Slide);
             }
         }
     }

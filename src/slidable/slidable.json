@@ -2,5 +2,5 @@
   "slug": "dev",
   "place": "dnbm", 
   "api": "http://microstuff.io/",
-  "offline": false
+  "offline": true
 }
