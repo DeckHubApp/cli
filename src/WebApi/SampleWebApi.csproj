@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slidable.Rendering.Markdown\Slidable.Rendering.Markdown.csproj" />
+    <ProjectReference Include="..\Deck.Rendering.Markdown\Deck.Rendering.Markdown.csproj" />
   </ItemGroup>
 
   <ItemGroup>

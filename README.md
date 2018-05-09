@@ -1,15 +1,15 @@
-# Slidable CLI
+# Deck CLI
 
-This repo contains the Slidable command-line tool, which provides a simple, cross-platform,
+This repo contains the Deck command-line tool, which provides a simple, cross-platform,
 browser-based slide presentation app that also interacts with an online service, by default
-at [slidable.io](https://slidable.io) (although you can host your own), allowing people watching
+at [deckhub.app](https://deckhub.app) (although you can host your own), allowing people watching
 your talk to ask questions without interrupting, and to take notes against each slide that they
 can refer back to later.
 
 # Usage
 
-Some changes are being made to the Markdown document format that Slidable uses; once that is
-stable documentation will be made available on the main Slidable website.
+Some changes are being made to the Markdown document format that Deck uses; once that is
+stable documentation will be made available on the main Deck website.
 
 # Tech
 
@@ -63,15 +63,15 @@ P: [EXIT, PURSUED BY A WOMBAT]
 
 You get the idea.
 
-So it's very important to me that when you want to get Slidable, you can download a ZIP file
-that contains a single, self-contained binary executable, called `slidable.exe` on Windows and
-just `slidable` on Mac and Linux, and put it on your path somewhere, and then that's it.
+So it's very important to me that when you want to get Deck, you can download a ZIP file
+that contains a single, self-contained binary executable, called `deckhub.exe` on Windows and
+just `deckhub` on Mac and Linux, and put it on your path somewhere, and then that's it.
 Because that's how we win.
 
 # Contributing
 
-If you'd like to contribute to Slidable CLI's development, there's plenty of stuff to do. One
+If you'd like to contribute to Deck CLI's development, there's plenty of stuff to do. One
 thing I'd really like to see is more themes, especially ones designed by people with more
 artistic talent than [a cluster of colour-blind hedgehogs... in a bag](http://blackadderquotes.com/artistic-talent). But also just general improvements; if you have an
-idea to make the thing more usable or better, please [create an Issue](https://github.com/slidable/cli/issues) to discuss it and then fork away. Check out some of the
+idea to make the thing more usable or better, please [create an Issue](https://github.com/deckhub/cli/issues) to discuss it and then fork away. Check out some of the
 awesome stuff that Reveal.js does if you want some ideas.

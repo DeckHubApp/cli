@@ -1,0 +1,7 @@
+{
+  "slug": "tag-for-your-presentation",
+  "place": "where-you-are-presenting", 
+  "api": "https://deckhub.app/",
+  "apiKey": "Your API key from https://deckhub.app/i/Identity/Account/Manage",
+  "offline": false
+}

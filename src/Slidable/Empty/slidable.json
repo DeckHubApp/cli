@@ -1,7 +1,0 @@
-{
-  "slug": "tag-for-your-presentation",
-  "place": "where-you-are-presenting", 
-  "api": "https://slidable.io/",
-  "apiKey": "Your API key from https://slidable.io/i/Identity/Account/Manage",
-  "offline": false
-}
