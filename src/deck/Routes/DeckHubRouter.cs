@@ -65,14 +65,17 @@ namespace Deck.Routes
             }
             try
             {
-                await _client.StartShow(new StartShow
+                var startShow = new StartShow
                 {
                     Presenter = _options.Presenter,
                     Place = _options.Place,
                     Slug = _options.Slug,
                     Time = DateTimeOffset.Now,
                     Title = _options.Title ?? show.Metadata.GetStringOrEmpty("title")
-                }).ConfigureAwait(false);
+                };
+                await _client.StartShow(startShow).ConfigureAwait(false);
+                
+                _logger.LogInformation($"Started: {startShow.Place} {startShow.Presenter} {startShow.Slug} {startShow.Time} {startShow.Title}");
             }
             catch (Exception ex)
             {

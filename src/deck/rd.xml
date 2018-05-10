@@ -1,7 +1,9 @@
 <Directives>
   <Application>
 
-    <Assembly Name="deck" Dynamic="Required All" />
+    <Assembly Name="deck" Dynamic="Required All">
+      <Type Name="Deck.StartShow" Dynamic="Required All"/>
+    </Assembly>
     <Assembly Name="Markdig" Dynamic="Required All" />
     <Assembly Name="SharpYaml" Dynamic="Required All" />
     <Assembly Name="Deck.Rendering.Markdown" Dynamic="Required All" />
